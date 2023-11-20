@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.transitapp.R
 import com.example.transitapp.databinding.FragmentHomeBinding
+import com.google.transit.realtime.GtfsRealtime
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import java.net.URL
+
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private var mapView: MapView? = null
@@ -28,6 +31,8 @@ class HomeFragment : Fragment() {
         // MapView initialization
         mapView = root.findViewById(R.id.mapView)
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
+
+
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
