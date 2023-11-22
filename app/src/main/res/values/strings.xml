@@ -4,4 +4,5 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="mapbox_access_token">pk.eyJ1Ijoia2FuaXNoazAxIiwiYSI6ImNsb3owYm91MzA4dG4yb3BlYzB4MGd1cWQifQ.N6TzlM5yb6keeS93v3jYpw</string>
+
 </resources>

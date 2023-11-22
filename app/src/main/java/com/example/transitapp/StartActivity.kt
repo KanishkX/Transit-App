@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.transitapp.ui.home.HomeFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
@@ -61,6 +62,16 @@ class StartActivity : AppCompatActivity() {
                         intent.putExtra("latitude", latitude)
                         intent.putExtra("longitude", longitude)
                         startActivity(intent)
+                        val fragment = HomeFragment()
+                        val bundle = Bundle()
+                        bundle.putDouble("latitude", latitude)
+                        bundle.putDouble("longitude", longitude)
+                        fragment.arguments = bundle
+
+                        val transaction = supportFragmentManager.beginTransaction()
+                        transaction.add(fragment, "HomeFragment")
+                        transaction.commit()
+
                     }
                 }
         }else{
