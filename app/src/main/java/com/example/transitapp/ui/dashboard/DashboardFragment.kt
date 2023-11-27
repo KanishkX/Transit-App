@@ -45,6 +45,8 @@ class DashboardFragment : Fragment() {
         // Create the adapter and set it to the AutoCompleteTextView
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, busNumbers)
         autoCompleteTextView.setAdapter(adapter)
+
+
         return root
     }
 
