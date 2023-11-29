@@ -43,7 +43,7 @@ class NotificationsFragment : Fragment() {
         for (entity in feed.entityList) {
             var Entity: GtfsRealtime.FeedEntity? = entity
             if (Entity != null) {
-                Log.i("SUCCESS", Entity.alert.descriptionText.translationList[0].text.toString())
+                Log.i("SUCCESS", Entity.toString())
                 val Layout: LinearLayout = binding.linear
                 val textView: TextView = TextView(requireContext())
                 textView.setText(Entity.alert.descriptionText.translationList[0].text.toString())

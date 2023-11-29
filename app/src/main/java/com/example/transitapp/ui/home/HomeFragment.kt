@@ -1,6 +1,7 @@
 
 package com.example.transitapp.ui.home
-import android.content.Intent
+
+import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -8,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.transitapp.R
@@ -17,10 +20,11 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.MapView
 import com.mapbox.maps.MapboxMap
 import com.mapbox.maps.Style
-import com.mapbox.maps.plugin.animation.camera
 import com.mapbox.maps.viewannotation.ViewAnnotationManager
 import com.mapbox.maps.viewannotation.viewAnnotationOptions
+import java.io.File
 import java.net.URL
+
 
 class HomeFragment() : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -69,13 +73,40 @@ class HomeFragment() : Fragment() {
         for (entity in feed.entityList) {
             var Entity: GtfsRealtime.FeedEntity? = entity
             if (Entity != null) {
+                val fileName = "user_routes.txt"
+                val file = File(requireContext().filesDir, fileName)
+                val content = context?.openFileInput(fileName)?.bufferedReader()?.useLines { lines ->
+                    lines.joinToString("\n")
+                }
+                val array1: Array<String> = content.toString().split(",").toTypedArray()
+                var array: Array<String> = array1.toSet().toTypedArray()
                 Log.i("SUCCESS", Entity.vehicle.trip.routeId.toString())
                 Log.i("SUCCESS", Entity.vehicle.position.latitude.toString())
                 Log.i("SUCCESS", Entity.vehicle.position.longitude.toString())
                 val latitude = entity.vehicle.position.latitude
                 val longitude = entity.vehicle.position.longitude
                 val point = Point.fromLngLat(longitude.toDouble(), latitude.toDouble())
-                addViewAnnotation(point, Entity.vehicle.trip.routeId.toString() )
+
+                for(i: String in array){
+                    if(i == Entity.vehicle.trip.routeId.toString() ){
+                        addViewAnnotation(point, Entity.vehicle.trip.routeId.toString() )
+                        val unwrappedDrawable = AppCompatResources.getDrawable(
+                            requireContext(), R.drawable.rounded_corner_view
+                        )
+                        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+                        DrawableCompat.setTint(wrappedDrawable, Color.RED)
+                    }else{
+                        addViewAnnotation(point, Entity.vehicle.trip.routeId.toString() )
+                        val unwrappedDrawable = AppCompatResources.getDrawable(
+                            requireContext(), R.drawable.rounded_corner_view
+                        )
+                        val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
+                        DrawableCompat.setTint(wrappedDrawable, Color.BLACK)
+                    }
+                }
+
+
+
 
 //                mapboxMap = binding.mapView.getMapboxMap().apply {
 //                    // Load a map style
@@ -89,6 +120,7 @@ class HomeFragment() : Fragment() {
 
             }
         }
+
         return root
     }
 
