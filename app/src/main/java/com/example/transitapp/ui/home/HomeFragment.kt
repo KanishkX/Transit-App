@@ -3,6 +3,8 @@ package com.example.transitapp.ui.home
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
@@ -35,7 +37,8 @@ class HomeFragment() : Fragment() {
     private val binding get() = _binding!!
     private lateinit var mapboxMap: MapboxMap
     private lateinit var viewAnnotationManager: ViewAnnotationManager
-
+    private val handler = Handler(Looper.getMainLooper())
+    private val refreshInterval = 10000L // 20 seconds
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,7 +54,7 @@ class HomeFragment() : Fragment() {
         mapView = root.findViewById(R.id.mapView)
         mapView?.getMapboxMap()?.loadStyleUri(Style.MAPBOX_STREETS)
         viewAnnotationManager = _binding!!.mapView.viewAnnotationManager
-
+        fetchAndRefreshBusPositions()
 //        var intent: Intent = Intent()
 //        val latitude = intent.getDoubleExtra("latitude", 0.0)
 //        val longitude = intent.getDoubleExtra("longitude", 0.0)
@@ -61,6 +64,19 @@ class HomeFragment() : Fragment() {
 //        homeViewModel.text.observe(viewLifecycleOwner) {
 //            textView.text = it
 //        }
+
+        // Schedule periodic updates
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                viewAnnotationManager.removeAllViewAnnotations()
+                fetchAndRefreshBusPositions()
+                handler.postDelayed(this, refreshInterval)
+            }
+        }, refreshInterval)
+
+        return root
+    }
+    public fun fetchAndRefreshBusPositions(){
         // Allow network operations on the main thread
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
@@ -108,6 +124,7 @@ class HomeFragment() : Fragment() {
 
 
 
+
 //                mapboxMap = binding.mapView.getMapboxMap().apply {
 //                    // Load a map style
 //                    loadStyleUri(Style.MAPBOX_STREETS) {
@@ -120,8 +137,6 @@ class HomeFragment() : Fragment() {
 
             }
         }
-
-        return root
     }
 
     override fun onDestroyView() {
