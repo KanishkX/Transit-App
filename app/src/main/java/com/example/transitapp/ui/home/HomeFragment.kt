@@ -89,30 +89,32 @@ class HomeFragment() : Fragment() {
         for (entity in feed.entityList) {
             var Entity: GtfsRealtime.FeedEntity? = entity
             if (Entity != null) {
+                //Routes text Files
                 val fileName = "user_routes.txt"
-                val file = File(requireContext().filesDir, fileName)
                 val content = context?.openFileInput(fileName)?.bufferedReader()?.useLines { lines ->
                     lines.joinToString("\n")
                 }
+                //Converting to an array
                 val array1: Array<String> = content.toString().split(",").toTypedArray()
-                var array: Array<String> = array1.toSet().toTypedArray()
+
                 Log.i("SUCCESS", Entity.vehicle.trip.routeId.toString())
                 Log.i("SUCCESS", Entity.vehicle.position.latitude.toString())
                 Log.i("SUCCESS", Entity.vehicle.position.longitude.toString())
+
                 val latitude = entity.vehicle.position.latitude
                 val longitude = entity.vehicle.position.longitude
                 val point = Point.fromLngLat(longitude.toDouble(), latitude.toDouble())
-
-                for(i: String in array){
-                    if(i == Entity.vehicle.trip.routeId.toString() ){
-                        addViewAnnotation(point, Entity.vehicle.trip.routeId.toString() )
+                val routeId = Entity.vehicle.trip.routeId.toString()
+                for (i: String in array1) {
+                    if (i == routeId) {
+                        addViewAnnotation(point, routeId)
                         val unwrappedDrawable = AppCompatResources.getDrawable(
                             requireContext(), R.drawable.rounded_corner_view
                         )
                         val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
                         DrawableCompat.setTint(wrappedDrawable, Color.RED)
-                    }else{
-                        addViewAnnotation(point, Entity.vehicle.trip.routeId.toString() )
+                    } else {
+                        addViewAnnotation(point, routeId)
                         val unwrappedDrawable = AppCompatResources.getDrawable(
                             requireContext(), R.drawable.rounded_corner_view
                         )
@@ -120,21 +122,6 @@ class HomeFragment() : Fragment() {
                         DrawableCompat.setTint(wrappedDrawable, Color.BLACK)
                     }
                 }
-
-
-
-
-
-//                mapboxMap = binding.mapView.getMapboxMap().apply {
-//                    // Load a map style
-//                    loadStyleUri(Style.MAPBOX_STREETS) {
-//                        // Get the center point of the map
-//                        val center = mapboxMap.cameraState.center
-//                        // Add the view annotation at the center point
-//
-//                    }
-//                }
-
             }
         }
     }

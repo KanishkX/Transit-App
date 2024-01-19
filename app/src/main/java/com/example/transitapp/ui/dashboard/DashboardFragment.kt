@@ -18,6 +18,7 @@ import com.example.transitapp.databinding.FragmentDashboardBinding
 import java.io.File
 import java.io.File.separator
 import java.io.FileOutputStream
+import java.io.FileWriter
 
 class DashboardFragment : Fragment() {
 
@@ -77,14 +78,16 @@ class DashboardFragment : Fragment() {
 
     private fun saveBusRoute(route: String) {
         val fileName = "user_routes.txt"
+        val busArray: Array<String> = resources.getStringArray(R.array.bus)
         val file = File(requireContext().filesDir, fileName)
         val content = context?.openFileInput(fileName)?.bufferedReader()?.useLines { lines ->
             lines.joinToString("\n")
         }
+
         val array1: Array<String> = content.toString().split(",").toTypedArray()
         var array: Array<String> = array1.toSet().toTypedArray()
         try {
-            if (route !in array) {
+            if (route !in array && route in busArray) {
                 array += route
                 val content = array.joinToString(separator = ",")
                 FileOutputStream(file).use { fos ->
